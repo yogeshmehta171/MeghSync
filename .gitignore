@@ -1,0 +1,26 @@
+# environments and dependencies
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.pyc
+# secrets
+.env
+.env.*
+!.env.example
+# big or private files: share these by Drive, not git
+*.zip
+*.pt
+*.pth
+!ml/checkpoints_v2/best_model.pt
+dataset/
+out/
+*.npy
+!ml/checkpoints_v2/dry_baseline.npy
+*.vdi
+*.vmdk
+# build output
+frontend/dist/
+.vite/
+
+!ml/checkpoints_v3/best_model_v3.pt

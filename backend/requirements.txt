@@ -1,0 +1,9 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+asyncpg>=0.29
+pydantic>=2.6
+PyJWT>=2.8
+numpy
+pandas            # imported by ml/dataset.py, which ml/model.py imports
+torch
+torch_geometric   # >= 2.3 (model.py uses torch_geometric.utils.scatter)

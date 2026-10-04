@@ -1,0 +1,18 @@
+# Database only (PostGIS + pgRouting). The backend runs from your venv: see README.
+# Set POSTGIS_IMAGE to the image you already use. Find it with:
+#   docker inspect flood_postgis --format "{{.Config.Image}}"
+services:
+  db:
+    image: ${POSTGIS_IMAGE:?set POSTGIS_IMAGE in .env, see comment above}
+    container_name: flood_postgis
+    environment:
+      POSTGRES_USER: ${DB_USER:-flood}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      POSTGRES_DB: ${DB_NAME:-flood_db}
+    ports:
+      - "127.0.0.1:5433:5432"        # reachable from this machine only
+    volumes:
+      - flood_pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+volumes:
+  flood_pgdata:
