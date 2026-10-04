@@ -18,7 +18,7 @@ Listed alphabetically. Write what each person actually did, for example research
 
 | Name | GitHub | Contribution |
 |---|---|---|
-| [Name 4] | [@username] | [what they did] |
+| **Qudrat Raina** | [@username] | [what they did] |
 | [Name 5] | [@username] | [what they did] |
 | [Name 6] | [@username] | [what they did] |
 
