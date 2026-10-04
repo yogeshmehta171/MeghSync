@@ -1,0 +1,67 @@
+checkpoint: checkpoints_v3/best_model.pt | device: cuda | nodes 662 | edges 661
+model config: {'n_nodes': 662, 'n_edges': 661, 'n_node_static': 8, 'n_edge_static': 0, 'hidden': 32, 'n_layers': 3, 'seq_len': 12, 'heads': 4}
+dry baseline depth (m): min 0.000 median 0.000 max 0.000
+held-out storms: 50 (ids 250..299) | SWMM max flood in them: 2.33 m
+
+=== A1: zero rain for 3 h from the dry state, no dead-band ===
+  max flood 0.00 cm | nodes that ever go wet 0 | max node-depth drift from dry state 0.020 m
+  >> [PASS] A1 zero rain stays dry: max flood 0.00 cm (limit 1 cm)
+
+=== A2: cold start, constant rain from the first tick ===
+  cell = max flood cm / nodes above 15 cm
+  rain mm/hr           +1 h           +3 h
+           0          0.0/0          0.0/0
+          10         12.6/0        41.8/17
+          30        57.8/33      172.3/138
+          60      118.4/104      231.7/228
+          90      161.5/165      242.2/329
+         120      195.1/216      247.5/430
+         150      214.1/255      253.9/483
+  >> [PASS] A2a more rain never means fewer flooded nodes: +1h counts [0, 0, 33, 104, 165, 216, 255] | +3h counts [0, 17, 138, 228, 329, 430, 483]
+  >> [PASS] A2b no physically absurd value: largest predicted flood 2.54 m (limit 1.25 x SWMM max = 2.92 m)
+
+=== A3: held-out storms, real SWMM for 12 steps then the model feeds on itself ===
+  storms used: 50, of which 50 have a node above 15 cm in SWMM
+  horizon  | recall  prec    F1 | persist recall persist prec | MAE wet cm | false-wet dry %
+  +5 min   |   0.96  0.98  0.97 |           0.86         1.00 |        1.1 |           1.588
+  +30 min  |   0.92  0.95  0.93 |           0.47         0.97 |        2.2 |           1.805
+  +1 h     |   0.91  0.94  0.93 |           0.28         0.95 |        3.1 |           1.597
+  +2 h     |   0.92  0.95  0.94 |           0.17         0.93 |        4.2 |           1.587
+  +3 h     |   0.93  0.95  0.94 |           0.17         0.92 |        4.3 |           1.466
+  >> [PASS] A3 +1 h recall/precision: recall 0.91 (need 0.80), precision 0.94 (need 0.70)
+  >> [PASS] A3 +3 h recall/precision: recall 0.93 (need 0.70), precision 0.95 (need 0.70)
+
+=== Blockage check 1: held-out storms that have blockage, real capacity vs capacity = 1 (INDICATIVE) ===
+  blocked storms tested: 29
+  +1 h: mean |change in prediction| on wet nodes 2.151 cm | error with real blockage 3.49 cm vs blockage removed 3.34 cm
+  +3 h: mean |change in prediction| on wet nodes 3.027 cm | error with real blockage 5.11 cm vs blockage removed 4.24 cm
+  >> [FAIL] Blockage (real storms, indicative): model reacts to blockage AND is more accurate with the real blockage (at +1 h)
+
+=== Blockage check 2: physical sanity -- more blocked pipes must not reduce flooding ===
+  using storm 283 (SWMM peak 2.33 m); every pipe set to the capacity below
+  capacity |    +1 h total flood m / nodes>15cm |    +3 h total flood m / nodes>15cm
+       1.0 |                      99.09 / 173   |                     140.91 / 198  
+       0.7 |                     100.61 / 176   |                     141.87 / 197  
+       0.4 |                     104.66 / 186   |                     149.02 / 199  
+       0.1 |                     117.51 / 196   |                     195.55 / 224  
+  >> [PASS] Blockage physical sanity: total flooding grows (or stays equal) as capacity drops 1.0 -> 0.7 -> 0.4 -> 0.1
+  local test: pipes around the 30 worst nodes (59 pipes) set to 0.1 -> flood on those nodes 35.30 m -> 33.38 m, whole network 99.09 m -> 97.61 m (+1 h)
+  >> [INFO] Blockage local effect: see line above (information only)
+
+=== A5: speed on CPU ===
+  one step: 55 ms | 36-step rollout: 2.03 s
+  >> [FAIL] A5 speed: one step 55 ms (limit 50), 36 steps 2.03 s (limit 2.0)
+
+================ SUMMARY ================
+[PASS] A1 zero rain stays dry: max flood 0.00 cm (limit 1 cm)
+[PASS] A2a more rain never means fewer flooded nodes: +1h counts [0, 0, 33, 104, 165, 216, 255] | +3h counts [0, 17, 138, 228, 329, 430, 483]
+[PASS] A2b no physically absurd value: largest predicted flood 2.54 m (limit 1.25 x SWMM max = 2.92 m)
+[PASS] A3 +1 h recall/precision: recall 0.91 (need 0.80), precision 0.94 (need 0.70)
+[PASS] A3 +3 h recall/precision: recall 0.93 (need 0.70), precision 0.95 (need 0.70)
+[FAIL] Blockage (real storms, indicative): model reacts to blockage AND is more accurate with the real blockage (at +1 h)
+[PASS] Blockage physical sanity: total flooding grows (or stays equal) as capacity drops 1.0 -> 0.7 -> 0.4 -> 0.1
+[INFO] Blockage local effect: see line above (information only)
+[FAIL] A5 speed: one step 55 ms (limit 50), 36 steps 2.03 s (limit 2.0)
+
+6 passed, 2 failed. Not tested here: A4 (needs paired SWMM runs with and without blockage), rain-only ablation, state accuracy.
+Saved to check_results.txt

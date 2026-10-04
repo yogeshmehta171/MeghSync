@@ -1,0 +1,42 @@
+{
+  "seed": 1234,
+  "horizon": 36,
+  "chunk": 4,
+  "curriculum": [
+    12,
+    12,
+    24,
+    24,
+    24
+  ],
+  "epochs": 16,
+  "batch_size": 16,
+  "lr": 0.0003,
+  "n_per_epoch": 3000,
+  "n_dry_windows": 2000,
+  "pos_weight_max": 10.0,
+  "mono_every": 4,
+  "mono_weight": 10.0,
+  "train_storms": [
+    0,
+    210
+  ],
+  "val_storms": [
+    210,
+    250
+  ],
+  "init_checkpoint": "checkpoints_v2/best_model.pt",
+  "model_config": {
+    "n_nodes": 662,
+    "n_edges": 661,
+    "n_node_static": 8,
+    "n_edge_static": 0,
+    "hidden": 32,
+    "n_layers": 3,
+    "seq_len": 12,
+    "heads": 4
+  },
+  "torch": "2.6.0+cu124",
+  "torch_geometric": "2.8.0.post1",
+  "nodes_csv_md5": "20cb4a4cebaa10a0316f937a6944c90f"
+}
