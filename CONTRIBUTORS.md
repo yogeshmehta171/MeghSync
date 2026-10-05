@@ -10,17 +10,7 @@ Listed alphabetically.
 |---|---|---|
 | **Chaitanya Mehta** | chaitanyamehta19-hub | The first version of the React frontend (public site and municipal command center), and, with [YOUR NAME], its later improvements. |
 | **Maanas Tiwari** | maanastiwari | The flood-prediction model in `ml/`: training, fine-tuning and evaluation. |
-| **Yogesh Mehta** | yogeshmehta171 | The backend (FastAPI, PostgreSQL/PostGIS, pgRouting, routing, reports, blocks, alerts, logs), connecting the model to the app, and frontend improvements with Chaitanya. |
-
-## Supporting team
-
-Listed alphabetically. Write what each person actually did, for example research, testing, documentation or the presentation.
-
-| Name | GitHub | Contribution |
-|---|---|---|
-| **Qudrat Raina** | [@username] | [what they did] |
-| [Name 5] | [@username] | [what they did] |
-| [Name 6] | [@username] | [what they did] |
+| **Yogesh Mehta** | yogeshmehta171 | The backend (FastAPI, PostgreSQL/PostGIS, pgRouting, routing, reports, blocks, alerts, logs), connecting the model to the app, and frontend improvements with Chaitanya. 
 
 ## Data and software credits
 
