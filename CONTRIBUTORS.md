@@ -1,7 +1,5 @@
 # Contributors
 
-MeghSync was built by a team of six. This page says who did what.
-
 ## Core development team
 
 Listed alphabetically.
