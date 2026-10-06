@@ -1,4 +1,4 @@
-# MeghSync: T. Nagar flood nowcasting and safe routing
+# MeghSync: T. Nagar flood Nowcasting and Safe Routing
 
 MeghSync predicts street-level flooding for T. Nagar, Chennai, now and for the next 3 hours, and gives people routes that avoid flooded streets. Municipal officials get a command center. Citizens get a public site with a safe-route planner and a flood report form.
 
@@ -17,13 +17,13 @@ The system learns from 300 synthetic storms simulated with EPA SWMM. A graph neu
 ```
 backend/     FastAPI service, database migrations, tests, test scripts
 frontend/    React + TypeScript + Tailwind + Leaflet app (Vite)
-ml/          model.py, dataset.py, train.py, check_results.txt, checkpoints_v2/ (first model), checkpoints_v3/ (fine-tuned model, the default)
+ml/          model.py, dataset.py, train.py, test results (check_results_v2.txt, check_results_v3.txt), checkpoints_v2/ (first model), checkpoints_v3/ (fine-tuned model, the default)
 db/          base schema and one-time loaders
 data/        nodes.csv, links.csv (the 662-node drainage graph)
 docs/        API contract, frontend integration notes, retraining report
 ```
 
-The training dataset (storm files and SWMM outputs) is too large for this repository. [Add the shared drive link here.]
+The training dataset and other large files are not in this repository. They are in a shared Google Drive folder: [[text](https://drive.google.com/drive/folders/1jN5j5Dcm4hHAqkBVrDW31zA1D7OpLpaN?usp=sharing)]
 
 ## Run it (Windows PowerShell, from the project root)
 
@@ -60,9 +60,18 @@ npm run dev                     # http://localhost:5173
 
 The default model is the fine-tuned one, `ml/checkpoints_v3/best_model_v3.pt`. To use the first model, set `MODEL_PATH` in `backend\.env` to the full path of `ml/checkpoints_v2/best_model.pt` and restart.
 
-On 50 storms the model never saw, hazard F1 (flooding deeper than 15 cm) is 0.93 to 0.97 from +5 minutes to +3 hours, and the depth error on flooded nodes is 1.1 cm at +5 minutes and 4.3 cm at +3 hours. The full table is in `ml/check_results.txt`.
+On 50 storms the model never saw, hazard F1 (flooding deeper than 15 cm) is 0.93 to 0.97 from +5 minutes to +3 hours, and the depth error on flooded nodes is 1.1 cm at +5 minutes and 4.3 cm at +3 hours. The full table is in `ml/check_results_v3.txt` (the first model's results are in `ml/check_results_v2.txt`).
 
 Known limits: it was trained only on synthetic 3-hour storms (none lighter than 11.6 mm/hr), its reaction to blocked pipes is weak, and it has not been compared with real flood records. The forecast assumes the current rainfall continues.
+
+## Documentation
+
+| File | What it covers |
+|---|---|
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | how the parts fit together, the background loop, routing, report workflow, database, settings |
+| [docs/API_CONTRACT.md](docs/API_CONTRACT.md) | every endpoint with inputs, outputs and rules |
+| [docs/FRONTEND.md](docs/FRONTEND.md) | pages, shared state, folder map |
+| [docs/MODEL_REPORT.md](docs/MODEL_REPORT.md) | the data, the model, training and test results for both models |
 
 ## Testing
 
@@ -72,6 +81,21 @@ python -m unittest discover -s tests                                   # 19 unit
 python verify_model_swap.py ..\ml\checkpoints_v3\best_model_v3.pt      # checks a model file with the real backend code
 python live_model_test.py --user YOUR_ADMIN_ID                         # needs the backend running; about 4 minutes
 ```
+
+Tools for the training data (run from the training folder): `tools/storm_stats.py` describes the storms and `tools/dataset_qa.py` checks the files.
+
+## Large files
+
+The shared Drive folder (view-only link) contains what is too big or too private for GitHub:
+
+| In the Drive folder | What it is |
+|---|---|
+| `training/dataset/` | the simulated storms: `flood_storm_XXX.npy`, `depth_storm_XXX.npy`, `blockage_storm_XXX.npy`, `edge_index.pt` |
+| `training/synthetic_storms_mm_hr.npy`, `training/out/nodes.csv` | the rain for every storm and the node properties used by the model |
+| `training/checkpoints/` | every training checkpoint (`checkpoint_epoch_XX.pth`, `last_checkpoint.pt`) so training can be resumed |
+| `demo/` | the demo video and the presentation |
+
+Never put `.env` files, passwords or keys in the Drive folder.
 
 ## Things to know
 
