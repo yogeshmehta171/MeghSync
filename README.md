@@ -102,7 +102,7 @@ Never put `.env` files, passwords or keys in the Drive folder.
 * **One worker only.** The live state is in memory and one loop writes to the database.
 * **Simulation clock.** One tick (default 5 seconds) advances the model by one 5-minute step, so the demo runs 60 times faster than real time. For real use set `INFERENCE_INTERVAL_SECONDS=300`.
 * **Blocks persist** until an official releases them. Resetting the simulation keeps them.
-* **Never commit** `.env` files. Before a public launch, change `JWT_SECRET`, remove the `BOOTSTRAP_ADMIN_*` lines and review CORS and the map tile provider.
+
 
 ## Team
 
