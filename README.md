@@ -23,7 +23,7 @@ data/        nodes.csv, links.csv (the 662-node drainage graph)
 docs/        API contract, frontend integration notes, retraining report
 ```
 
-The training dataset and other large files are not in this repository. They are in a shared Google Drive folder: [[text](https://drive.google.com/drive/folders/1jN5j5Dcm4hHAqkBVrDW31zA1D7OpLpaN?usp=sharing)]
+The training dataset and other large files are not in this repository. They are in a shared Google Drive folder: (https://drive.google.com/drive/folders/1jN5j5Dcm4hHAqkBVrDW31zA1D7OpLpaN?usp=sharing)
 
 ## Run it (Windows PowerShell, from the project root)
 
